@@ -16,7 +16,7 @@ import hidden
 def del_instance(*args):
 
     # login authentication
-    login_url = 'http://192.168.0.4/api/auth/login'
+    login_url = 'http://192.168.0.15/api/auth/login'
 
     creds = hidden.secret
 
@@ -28,9 +28,10 @@ def del_instance(*args):
 
     print(cookies)
     
+
     for node_id in args:
 
-        del_url = f'http://192.168.0.4/api/labs/My_Virtual_Lab/Network_Lab.unl/nodes/{node_id}'
+        del_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}'
 
         del_api = requests.delete(url=del_url, cookies=cookies, headers=headers)
 
@@ -43,6 +44,9 @@ def del_instance(*args):
         #     print(f"The Node ID/s {node_id} deleted successfully!")
         # else:
         #     print(f"Failed to delete the Node ID/s {node_id}. Error code {'code'}")
+
+folder = input("Enter the Folder name: ")
+topology = input("Enter the Topology name: ")
 
 del_node_instance = (input("Enter the Node ID Instance/s to be deleted (e.i. 1,2,3): ").split(','))
 
