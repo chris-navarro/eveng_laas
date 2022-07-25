@@ -1,1 +1,1 @@
-secret = '{"username": "admin","password": "eve","html5": "-1"}'
+secret = '{"username": "cn02945","password": "eve","html5": "-1"}'
