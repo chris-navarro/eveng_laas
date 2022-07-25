@@ -26,37 +26,6 @@ cookies = login.cookies
 
 print(cookies)
 
-# adding a new user
-def create_user():
-    global user
-    user = input("Enter a Username(e.i. SOEID): ")
-    pod_id = int(input("Enter POD ID (e.i. 1, 2, 3): "))
-
-    user_data = {
-                    "username":f"{user}",
-                    "name":f"{user}",
-                    "email":f"{user}@citi.com",
-                    "password":"eve",
-                    "role":"admin",
-                    "expiration":"-1",
-                    "pod":f"{pod_id}",
-                    "pexpiration":"-1"
-                }
-
-    user_data = json.dumps(user_data)
-
-    create_user_url = 'http://192.168.0.15/api/users'
-
-    create_user_api = requests.post(url=create_user_url, data=user_data, cookies=cookies, headers=headers)
-    user_api_response = create_user_api.json()
-
-    if user_api_response['status'] == 'success':
-        print("New User and POD ID has been created.")
-    else:
-        print(f"Failed in creating a new user. {user_api_response['message']}")
-    #print(user_api_response)
-create_user()
-
 # adding a new folder for the virtual lab
 def create_folder():
     global folder
@@ -90,9 +59,9 @@ def create_topology():
                     "path": f"/{folder}",
                     "name": f"{topology}",
                     "version": "1",
-                    "author": f"{user}",
+                    "author": "",
                     "description": "A new demo lab",
-                    "body": "Lab usage and guide"
+                    "tasks": "Lab usage and guide"
                     }
 
     new_topology = json.dumps(new_topology)
@@ -111,7 +80,7 @@ create_topology()
 
 # Adding a network
 def create_network_cloud(id):
-
+    global net_id
     for i in range(id):
         new_network_cloud = {
                         "count": "1",
@@ -176,7 +145,8 @@ def create_node_instance(total):
         create_intf_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/interfaces'
         # intf_mapping_ios =
         # intf_mapping_nxos = 
-        intf_mapping_eos = '{"1": "2"}'
+        intf_mapping_eos = {"1": f"{net_id}"}
+        intf_mapping_eos = json.dumps(intf_mapping_eos)
         intf_api = requests.put(url=create_intf_url, data=intf_mapping_eos, cookies=cookies, headers=headers)
         intf_api_response = intf_api.json()
         #print(intf_api_response)
