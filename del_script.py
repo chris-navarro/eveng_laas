@@ -11,14 +11,14 @@
 
 import requests
 import json
-import hidden
+i#mport hidden
 
 def del_instance(*args):
 
     # login authentication
     login_url = 'http://192.168.0.15/api/auth/login'
 
-    creds = hidden.secret
+    creds = {"username": f"{user}","password": "eve","html5": "-1"}
 
     headers = {'Accept': 'application/json'}
 
@@ -44,7 +44,7 @@ def del_instance(*args):
         #     print(f"The Node ID/s {node_id} deleted successfully!")
         # else:
         #     print(f"Failed to delete the Node ID/s {node_id}. Error code {'code'}")
-
+user = input("Enter the username: ")
 folder = input("Enter the Folder name: ")
 topology = input("Enter the Topology name: ")
 
