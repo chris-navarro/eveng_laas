@@ -6,7 +6,7 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# Version 1.0, written 07-21-2022 by
+# Version 1.0, written 07-22-2022 by
 # ejnavarro@gmail.com
 
 import requests
@@ -14,7 +14,8 @@ import json
 
 # login authentication
 login_url = 'http://192.168.0.15/api/auth/login'
-creds = '{"username": "admin","password": "eve","html5": "-1"}'
+
+creds = '{"username": "devuser","password": "eve","html5": "-1"}'
 
 headers = {'Accept': 'application/json'}
 
@@ -24,32 +25,6 @@ cookies = login.cookies
 
 print(cookies)
 
-# adding a new user
-user_data = {
-                "username": "devuser",
-                "name":"chris Navarro",
-                "email":"cn02945@citi.com",
-                "password":"eve",
-                "role":"admin",
-                "expiration":"-1",
-                "pod":8,
-                "pexpiration":"-1"
-            }
-
-user_data = json.dumps(user_data)
-
-create_user_url = 'http://192.168.0.15/api/users'
-
-create_user_api = requests.post(url=create_user_url, data=user_data, cookies=cookies, headers=headers)
-user_api_response = create_user_api.json()
-
-# if user_api_response['status'] == 'success':
-#     print("New User has been created.")
-# else:
-#     print("Failed in creating new user.")
-print(user_api_response)
-
-# adding a new folder for the virtual lab
 new_folder = {
                 "path": "/",
                 "name": "dev_folder"
