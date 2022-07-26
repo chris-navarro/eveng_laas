@@ -11,15 +11,14 @@
 
 import requests
 import json
-import hidden
+# import hidden
 # from eve_ng import create_node_instance
 
 def stop_nodes(*args):
 
     # login authentication
     login_url = 'http://192.168.0.15/api/auth/login'
-
-    creds = hidden.secret
+    creds = {"username": f"{user}","password": "eve","html5": "-1"}
     headers = {'Accept': 'application/json'}
     login = requests.post(url=login_url, data=creds)
     cookies = login.cookies
@@ -33,7 +32,7 @@ def stop_nodes(*args):
         response = stop_node_api.json()
         print(f"Shutting Down Node/s {node_id}.")
         #print(response)
-
+user = input("Enter the username: ")
 folder = input("Enter the Virtual Lab Folder: ")
 topology = input("Enter the Virtual Lab Topology: ")
 
