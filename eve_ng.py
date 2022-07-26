@@ -6,7 +6,7 @@
 # purpose with or without fee is hereby granted, provided that the above
 # copyright notice and this permission notice appear in all copies.
 #
-# Version 1.0, written 07-21-2022 by
+# Version 1.0, written 07-22-2022 by
 # ejnavarro@gmail.com
 
 import requests
@@ -24,7 +24,7 @@ login = requests.post(url=login_url, data=creds)
 
 cookies = login.cookies
 
-print(cookies)
+#print(cookies)
 
 # adding a new folder for the virtual lab
 def create_folder():
@@ -79,27 +79,30 @@ def create_topology():
 create_topology()
 
 # Adding a network
-def create_network_cloud(id):
-    global net_id
-    for i in range(id):
-        new_network_cloud = {
-                        "count": "1",
-                        "visibility": "1",
-                        "name": f"Net-{network_id}",
-                        "type": f"pnet{network_id}",
-                        "left": "750",
-                        "top": "173",
-                        "postfix": 0
-                    }
-        new_network_cloud = json.dumps(new_network_cloud)
-        create_network_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks'
-        create_network_api = requests.post(url=create_network_url, data=new_network_cloud, cookies=cookies, headers=headers)
-        network_api_response = create_network_api.json()
-        net_id = network_api_response["data"]["id"]
-        print(f" Successfully Created Network Cloud ID: {net_id}")
-        # print(network_api_response)
-network_id = int(input("Enter the Total Network Cloud needed: "))
-create_network_cloud(network_id)
+def create_network_cloud():
+    global cloud_name
+    global network_id
+    #for i in range(0,id+1):
+    new_network_cloud = {
+                    "count": "1",
+                    "visibility": "1",
+                    "name": f"Net-{cloud_name}",
+                    "type": f"pnet{cloud_name}",
+                    "left": "750",
+                    "top": "173",
+                    "postfix": 0
+                }
+    new_network_cloud = json.dumps(new_network_cloud)
+    create_network_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks'
+    create_network_api = requests.post(url=create_network_url, data=new_network_cloud, cookies=cookies, headers=headers)
+    network_api_response = create_network_api.json()
+    #print(network_api_response)
+    net_id = network_api_response["data"]["id"]
+    print(f" Successfully Created Network Cloud ID: {net_id}")
+
+network_id = int(input("Enter the Network Cloud ID (e.i. 1,2,3...9): "))
+cloud_name = network_id - 1
+create_network_cloud()
 
 def create_node_instance(total):
 
@@ -143,9 +146,15 @@ def create_node_instance(total):
 
         print("Connecting the interface/s to the Network Cloud")
         create_intf_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/interfaces'
+
+        if cloud_name == 0:
+            intf_cloud_net_id = network_id
+        else:
+             intf_cloud_net_id = network_id - 1
+
         # intf_mapping_ios =
-        # intf_mapping_nxos = 
-        intf_mapping_eos = {"1": f"{net_id}"}
+        # intf_mapping_nxos =
+        intf_mapping_eos = {"1": f"{intf_cloud_net_id}"}
         intf_mapping_eos = json.dumps(intf_mapping_eos)
         intf_api = requests.put(url=create_intf_url, data=intf_mapping_eos, cookies=cookies, headers=headers)
         intf_api_response = intf_api.json()
