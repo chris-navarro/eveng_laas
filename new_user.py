@@ -11,7 +11,7 @@
 
 import requests
 import json
-import hidden
+# import hidden
 
 # login authentication
 login_url = 'http://192.168.0.15/api/auth/login'
@@ -28,7 +28,9 @@ cookies = login.cookies
 
 # adding a new user
 def create_user():
-    #global user
+
+    global user
+    global pod_id
     user = input("Enter a Username(e.i. SOEID): ")
     pod_id = int(input("Enter POD ID (e.i. 1, 2, 3): "))
 
@@ -49,14 +51,20 @@ def create_user():
 
     create_user_api = requests.post(url=create_user_url, data=user_data, cookies=cookies, headers=headers)
     user_api_response = create_user_api.json()
-
+    #print(user_api_response)
     if user_api_response['status'] == 'success':
-        print("New User and POD ID has been created.")
+        print(f"New user {user} and POD ID {pod_id} has been created successfully.")
+    elif user_api_response['code'] == 500:
+        print(f"Failed in creating a new user. {user_api_response['message']}")
     else:
         print(f"Failed in creating a new user. {user_api_response['message']}")
-    #print(user_api_response)
+        del_user_url = f'http://192.168.0.15/api/users/{user}'
+        create_user_api = requests.delete(url=del_user_url,cookies=cookies, headers=headers)
+        user_api_response = create_user_api.json()
+        #print(user_api_response)
+        print("Cleaning the Database.")
+
 create_user()
 
 logout_url = 'http://192.168.0.15/api/auth/logout'
 login = requests.get(url=logout_url, data=creds)
-print("User has logout Successfully.")
