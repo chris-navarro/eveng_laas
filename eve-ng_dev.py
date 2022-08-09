@@ -121,6 +121,7 @@ new_node = {
             }
 
 new_node = json.dumps(new_node)
+print(new_node)
 
 create_node_url = 'http://192.168.0.4/api/labs/dev_folder/sample_network.unl/nodes'
 
