@@ -142,7 +142,7 @@ def create_node_instance(total):
         node_api_response = create_node_api.json()
         node_id = node_api_response["data"]["id"]
         print(f" New Created Node ID: {node_id}")
-        #print(node_api_response)
+        # print(node_api_response)
 
         print("Connecting the interface/s to the Network Cloud")
         create_intf_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/interfaces'
@@ -156,11 +156,43 @@ def create_node_instance(total):
         # intf_mapping_nxos =
         intf_mapping_eos = {"1": f"{intf_cloud_net_id}"}
         intf_mapping_eos = json.dumps(intf_mapping_eos)
+        # print(intf_mapping_eos)
         intf_api = requests.put(url=create_intf_url, data=intf_mapping_eos, cookies=cookies, headers=headers)
         intf_api_response = intf_api.json()
         #print(intf_api_response)
 
-        #Starting the Node/s
+        # Adding an interswitch Connection 
+        # Adding a network bridge for interswitch connection
+
+        new_bridge = {
+                    "visibility": 0
+                 }
+        new_bridge = json.dumps(new_bridge)
+
+        new_net_count = node_id + 1
+        # print(new_net_count)
+        p2p_net_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks/{new_net_count}'
+        p2p_net_api = requests.put(url=p2p_net_url, data=new_bridge, cookies=cookies, headers=headers)
+        p2pnet_api_res = p2p_net_api.json()
+        print(p2pnet_api_res)
+
+        intersw_node_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/interfaces'
+        # print(intersw_node1_url)
+
+        # Increment the assigned interface connecting the Cloud Network for Interswitch Connection
+        if intf_cloud_net_id == 1:
+            intersw_id = intf_cloud_net_id + 1
+        else:
+            Print("Interface not found!")
+
+        intfsw_node_mapping_eos = {"2":int(f"{intersw_id}")}
+        # print(intfsw_node_mapping_eos)
+        intfsw_node_mapping_eos = json.dumps(intfsw_node_mapping_eos)
+        create_intfsw_api = requests.put(url=intersw_node_url, data=intfsw_node_mapping_eos, cookies=cookies, headers=headers)
+        intfsw_api_response = create_intfsw_api.json()
+        print(f"Interswitch port/s for node{node_id}: Ethernet{intersw_id}") 
+        
+         #Starting the Node/s
         node_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/start'
         start_node_api = requests.get(url=node_url, cookies=cookies, headers=headers)
         response = start_node_api.json()
@@ -169,3 +201,6 @@ def create_node_instance(total):
 
 total_node_instance = int(input("Enter the Total Node Instances Required: "))
 create_node_instance(total_node_instance)
+
+
+    

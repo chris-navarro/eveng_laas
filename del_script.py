@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /bin/python3
 
 # Copyright (c) 2022, chris.navarro
 #
