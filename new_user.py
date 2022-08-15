@@ -9,8 +9,8 @@
 # Version 1.0, written 07-21-2022 by
 # ejnavarro@gmail.com
 
-import requests
 import json
+import requests
 # import hidden
 
 # login authentication
@@ -63,7 +63,6 @@ def create_user():
         user_api_response = create_user_api.json()
         #print(user_api_response)
         print("Cleaning the Database.")
-
 create_user()
 
 logout_url = 'http://192.168.0.15/api/auth/logout'

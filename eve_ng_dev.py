@@ -15,7 +15,7 @@ import json
 # login authentication
 login_url = 'http://192.168.0.15/api/auth/login'
 
-creds = '{"username": "devuser","password": "eve","html5": "-1"}'
+creds = '{"username": "admin","password": "eve","html5": "-1"}'
 
 headers = {'Accept': 'application/json'}
 

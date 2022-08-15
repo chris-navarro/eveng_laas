@@ -17,6 +17,7 @@ import hidden
 login_url = 'http://192.168.0.15/api/auth/login'
 
 creds = hidden.secret
+# print(creds)
 
 headers = {'Accept': 'application/json'}
 
@@ -24,7 +25,7 @@ login = requests.post(url=login_url, data=creds)
 
 cookies = login.cookies
 
-#print(cookies)
+# print(cookies)
 
 # adding a new folder for the virtual lab
 def create_folder():
@@ -47,7 +48,7 @@ def create_folder():
     else:
         print("Failed in creating New Folder.")
 
-    #print(folder_api_response)
+    # print(folder_api_response)
 create_folder()
 
 # Adding a new virtual network topology
@@ -82,7 +83,6 @@ create_topology()
 def create_network_cloud():
     global cloud_name
     global network_id
-    #for i in range(0,id+1):
     new_network_cloud = {
                     "count": "1",
                     "visibility": "1",
@@ -100,7 +100,7 @@ def create_network_cloud():
     net_id = network_api_response["data"]["id"]
     print(f" Successfully Created Network Cloud ID: {net_id}")
 
-network_id = int(input("Enter the Network Cloud ID (e.i. 1,2,3...9): "))
+network_id = int(input("Enter the Network Cloud ID (e.i. 1,2,3...9): "))  # This should be in even number or in pairs
 cloud_name = network_id - 1
 create_network_cloud()
 
@@ -163,18 +163,21 @@ def create_node_instance(total):
 
         # Adding an interswitch Connection 
         # Adding a network bridge for interswitch connection
+        net_num = network_id
 
-        new_bridge = {
-                    "visibility": 0
+        P2P_intf = {
+                        "count": 1,
+                        "name": f"Net-vEOS1iface_{net_num}",
+                        "type": "bridge",
+                        "left": 650,
+                        "top": 350,
+                        "visibility": 1,
+                        "postfix": 0
                  }
-        new_bridge = json.dumps(new_bridge)
-
-        new_net_count = node_id + 1
-        # print(new_net_count)
-        p2p_net_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks/{new_net_count}'
-        p2p_net_api = requests.put(url=p2p_net_url, data=new_bridge, cookies=cookies, headers=headers)
-        p2pnet_api_res = p2p_net_api.json()
-        print(p2pnet_api_res)
+        P2P_intf = json.dumps(P2P_intf)
+        net_p2p_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks'
+        net_p2p_api = requests.post(url=net_p2p_url, data=P2P_intf, cookies=cookies, headers=headers)
+        net_api_response = net_p2p_api.json()
 
         intersw_node_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/interfaces'
         # print(intersw_node1_url)
@@ -192,6 +195,19 @@ def create_node_instance(total):
         intfsw_api_response = create_intfsw_api.json()
         print(f"Interswitch port/s for node{node_id}: Ethernet{intersw_id}") 
         
+        new_bridge = {
+                        "visibility": 0
+                     }
+        new_bridge = json.dumps(new_bridge)
+
+        new_net_count = node_id + 1
+
+        p2p_net_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/networks/{new_net_count}'
+        p2p_net_api = requests.put(url=p2p_net_url, data=new_bridge, cookies=cookies, headers=headers)
+        p2pnet_api_res = p2p_net_api.json()
+        # print(p2pnet_api_res)
+        print("P2P Connection has been connected!")
+
          #Starting the Node/s
         node_url = f'http://192.168.0.15/api/labs/{folder}/{topology}.unl/nodes/{node_id}/start'
         start_node_api = requests.get(url=node_url, cookies=cookies, headers=headers)
